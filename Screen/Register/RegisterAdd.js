@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   View,
@@ -9,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function RegisterAdd({ navigation }) {
+export default function RegisterAdd({ setActiveScreen }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -18,9 +19,10 @@ export default function RegisterAdd({ navigation }) {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLoginScreen = async () => {
-    navigation.navigate('Login');
+  const handleLoginScreen = () => {
+    setActiveScreen('Login');
   };
+
   const handleRegister = async () => {
     if (
       !firstName ||
@@ -42,7 +44,10 @@ export default function RegisterAdd({ navigation }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/user/register', {
+      const response = await fetch('http://10.0.2.2:8000/api/user/register', {
+        // 👆 10.0.2.2 for Android Emulator
+        // use http://localhost:8000/... for iOS simulator
+        // use http://<your-pc-ip>:8000/... for real device
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -51,7 +56,7 @@ export default function RegisterAdd({ navigation }) {
           phone: phone,
           email: email,
           password: password,
-          password_confirmation: passwordConfirmation, // fix typo here
+          password_confirmation: passwordConfirmation,
         }),
       });
 
@@ -60,14 +65,22 @@ export default function RegisterAdd({ navigation }) {
 
       if (response.ok) {
         Alert.alert('Success', 'Registration successful!');
-        navigation.navigate('Login'); // go back to login screen
+        setActiveScreen('Login'); // go back to login
+
+        // clear form
+        setFirstName('');
+        setLastName('');
+        setPhone('');
+        setEmail('');
+        setPassword('');
+        setPasswordConfirmation('');
       } else {
         Alert.alert('Error', data.message || 'Something went wrong');
       }
     } catch (error) {
       setLoading(false);
       Alert.alert('Error', 'Network error');
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -75,7 +88,7 @@ export default function RegisterAdd({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
 
-      <Text style={styles.label}>Frist Name</Text>
+      <Text style={styles.label}>First Name</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
@@ -100,7 +113,7 @@ export default function RegisterAdd({ navigation }) {
         keyboardType="phone-pad"
       />
 
-      <Text style={styles.label}> Email</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -109,7 +122,7 @@ export default function RegisterAdd({ navigation }) {
         keyboardType="email-address"
       />
 
-      <Text style={styles.label}> Password</Text>
+      <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -118,7 +131,7 @@ export default function RegisterAdd({ navigation }) {
         secureTextEntry
       />
 
-      <Text style={styles.label}> Confirm Password</Text>
+      <Text style={styles.label}>Confirm Password</Text>
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"

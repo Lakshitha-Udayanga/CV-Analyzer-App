@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Image,
 } from 'react-native';
 
-const LoginScreen = ({ onLoginSuccess }) => {
+const LoginScreen = ({onLoginSuccess, onRegister}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,19 +30,19 @@ const LoginScreen = ({ onLoginSuccess }) => {
 
     try {
       const urlEndPoint = `${baseUrl}/api/login?username=${encodeURIComponent(
-        email
+        email,
       )}&password=${encodeURIComponent(password)}`;
 
       const response = await fetch(urlEndPoint, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
       });
 
       const data = await response.json();
 
       if (data.username && data.username.trim() !== '') {
         Alert.alert('Login Successful', `Welcome, ${data.username || 'User'}`);
-        onLoginSuccess(data); 
+        onLoginSuccess(data);
       } else {
         Alert.alert('Login Failed', data.message || 'Invalid credentials');
       }
@@ -57,9 +57,8 @@ const LoginScreen = ({ onLoginSuccess }) => {
     <View
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? '#000' : '#fff' },
-      ]}
-    >
+        {backgroundColor: isDarkMode ? '#000' : '#fff'},
+      ]}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Image
         source={{
@@ -67,14 +66,14 @@ const LoginScreen = ({ onLoginSuccess }) => {
         }}
         style={styles.logo}
       />
-      <Text style={[styles.title, { color: isDarkMode ? '#fff' : '#000' }]}>
+      <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
         Login
       </Text>
 
       <TextInput
         placeholder="Username"
         placeholderTextColor="#888"
-        style={[styles.input, { color: isDarkMode ? '#fff' : '#000' }]}
+        style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
         value={email}
         onChangeText={setEmail}
       />
@@ -82,18 +81,17 @@ const LoginScreen = ({ onLoginSuccess }) => {
       <TextInput
         placeholder="Password"
         placeholderTextColor="#888"
-        style={[styles.input, { color: isDarkMode ? '#fff' : '#000' }]}
+        style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <View style={{ gap: 10 }}>
+      <View style={{gap: 10}}>
         <TouchableOpacity
           onPress={handleLogin}
           style={[styles.button, loading && styles.disabledButton]}
-          disabled={loading}
-        >
+          disabled={loading}>
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
@@ -101,7 +99,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button]}>
+        <TouchableOpacity onPress={onRegister} style={styles.button}>
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -112,8 +110,8 @@ const LoginScreen = ({ onLoginSuccess }) => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
-  title: { fontSize: 32, marginBottom: 30, alignSelf: 'center' },
+  container: {flex: 1, justifyContent: 'center', paddingHorizontal: 24},
+  title: {fontSize: 32, marginBottom: 30, alignSelf: 'center'},
   input: {
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -127,8 +125,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 6,
   },
-  buttonText: { color: '#fff', fontSize: 18 },
-  registerButtonText: { color: '#fff', fontSize: 18 },
+  buttonText: {color: '#fff', fontSize: 18},
+  registerButtonText: {color: '#fff', fontSize: 18},
   logo: {
     width: 120,
     height: 120,

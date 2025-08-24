@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function Home({userData, setActiveScreen, onLogout}) {
+export default function AboutApp({userData, setActiveScreen, onLogout}) {
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       {text: 'Cancel', style: 'cancel'},
@@ -37,7 +37,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
-        <Text style={styles.navTitle}>Profile</Text>
+        <Text style={styles.navTitle}>About Application</Text>
         <View style={styles.navRight}>
           {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>
@@ -58,40 +58,32 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Image
-          source={{uri: 'https://i.pravatar.cc/300?img=12'}}
+          source={require('../../assets/images/lakshitha.jpg')}
           style={styles.avatar}
         />
 
         <Text style={styles.name}>Lakshitha Udayanga</Text>
-        <Text style={styles.email}>lakshitha@example.com</Text>
+        <Text style={styles.email}>lakshithamaludayanga19@gmail.com</Text>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Name</Text>
-          <Text style={styles.sectionContent}>{userData.username}</Text>
-          <Text style={styles.sectionTitle}>E-Mail</Text>
+          <Text style={styles.sectionTitle}>Bio</Text>
           <Text style={styles.sectionContent}>
             A passionate mobile app developer with experience in React Native,
             backend APIs, and cross-platform development. Always learning and
             building.
           </Text>
-          <Text style={styles.sectionTitle}>Mobile Number</Text>
-          <Text style={styles.sectionContent}>
-            0775255226
-          </Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}></Text>
-          <Text style={styles.sectionContent}></Text>
+          <Text style={styles.sectionTitle}>Skills</Text>
+          <Text style={styles.sectionContent}>
+            React Native, Laravel, Firebase, Node.js, Docker
+          </Text>
         </View>
       </ScrollView>
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
           <Text style={styles.downnavTitle}>Resume Analyzer</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setActiveScreen('AboutApp')}>
-          <Text style={styles.downnavTitle}>About App</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
