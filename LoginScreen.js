@@ -29,10 +29,13 @@ const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
 
     try {
       const baseUrl = 'https://resumeanalyzer.sltech.lk';
+      const token =
+        'OI5qFHMkPPALwWVTWWiXUbHD1xNxE1N5QwFnkJV3aLe1Nd3TtG3IuOQ2d6VDkQfQZAABlZfFJggxHUms';
       const response = await fetch(`${baseUrl}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
           Accept: 'application/json',
         },
         body: JSON.stringify({
@@ -47,6 +50,7 @@ const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
         const user = {
           ...data.user,
           baseUrl: baseUrl,
+          token: token,
         };
         Alert.alert('Login Successful', `Welcome ${user.name}`);
         onLoginSuccess(user);

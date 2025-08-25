@@ -25,6 +25,50 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     ]);
   };
 
+  const deleteAccount = async () => {
+
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `${userData.baseUrl}/api/delete/user/${userData.id}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${userData.token}`,
+                    Accept: 'application/json',
+                  },
+                },
+              );
+
+              if (response.ok) {
+                Alert.alert('Success', 'Account deleted successfully.');
+                onLogout();
+              } else {
+                const errorData = await response.json();
+                Alert.alert(
+                  'Error',
+                  errorData.message || 'Failed to delete account.',
+                );
+              }
+            } catch (error) {
+              console.error('Delete account error:', error);
+              Alert.alert('Error', 'Something went wrong. Please try again.');
+            }
+          },
+        },
+      ],
+    );
+  };
+
   const goToUserProfile = () => {
     Alert.alert('User Profile', 'Profile screen coming soon...', [
       {
@@ -71,7 +115,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           <Text style={styles.sectionTitle}>E-Mail</Text>
           <Text style={styles.sectionContent}>{userData.email}</Text>
           <Text style={styles.sectionTitle}>Mobile Number</Text>
-          <Text style={styles.sectionContent}>0775255226</Text>
+          <Text style={styles.sectionContent}>{userData.phone}</Text>
           <Text style={styles.sectionTitle}>Register No</Text>
           <Text style={styles.sectionContent}>{userData.user_ref_no}</Text>
           <Text style={styles.sectionTitle}>Register Date</Text>
@@ -80,10 +124,11 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           </Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}></Text>
-          <Text style={styles.sectionContent}></Text>
-        </View>
+        <TouchableOpacity style={styles.logoutButton} onPress={deleteAccount}>
+          <Text style={styles.logoutText}>Delete Account</Text>
+        </TouchableOpacity>
+        <Text style={styles.sectionContent}></Text>
+        {/* </View> */}
       </ScrollView>
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>

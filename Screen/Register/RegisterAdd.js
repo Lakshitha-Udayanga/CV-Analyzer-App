@@ -44,12 +44,15 @@ export default function RegisterAdd({setActiveScreen}) {
     setLoading(true);
 
     try {
+      const token =
+        'OI5qFHMkPPALwWVTWWiXUbHD1xNxE1N5QwFnkJV3aLe1Nd3TtG3IuOQ2d6VDkQfQZAABlZfFJggxHUms';
       const response = await fetch(
         'https://resumeanalyzer.sltech.lk/api/user/register',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
             Accept: 'application/json',
           },
           body: JSON.stringify({
@@ -176,7 +179,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#b1adadff',
+    backgroundColor: '#d8d8d8ff',
   },
   title: {
     fontSize: 28,
