@@ -23,7 +23,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     Alert.alert('User Profile', 'Profile screen coming soon...', [
       {
         text: 'OK',
-        onPress: () => setActiveScreen('UserProfile'), // ✅ switch after OK
+        onPress: () => setActiveScreen('UserProfile'), 
       },
     ]);
   };
