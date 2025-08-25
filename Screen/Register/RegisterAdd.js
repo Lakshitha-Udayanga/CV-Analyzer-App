@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function RegisterAdd({ setActiveScreen }) {
+export default function RegisterAdd({setActiveScreen}) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -18,6 +17,7 @@ export default function RegisterAdd({ setActiveScreen }) {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const handleLoginScreen = () => {
     setActiveScreen('Login');
@@ -44,30 +44,35 @@ export default function RegisterAdd({ setActiveScreen }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://10.0.2.2:8000/api/user/register', {
-        // 👆 10.0.2.2 for Android Emulator
-        // use http://localhost:8000/... for iOS simulator
-        // use http://<your-pc-ip>:8000/... for real device
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone,
-          email: email,
-          password: password,
-          password_confirmation: passwordConfirmation,
-        }),
-      });
+      const response = await fetch(
+        'https://resumeanalyzer.sltech.lk/api/user/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            email: email,
+            password: password,
+            password_confirmation: passwordConfirmation,
+          }),
+        },
+      );
 
       const data = await response.json();
       setLoading(false);
 
       if (response.ok) {
+        const user = data.user;
+        setUserData(user);
         Alert.alert('Success', 'Registration successful!');
-        setActiveScreen('Login'); // go back to login
+        setActiveScreen('Login');
 
-        // clear form
+        // Reset form
         setFirstName('');
         setLastName('');
         setPhone('');
@@ -75,12 +80,17 @@ export default function RegisterAdd({ setActiveScreen }) {
         setPassword('');
         setPasswordConfirmation('');
       } else {
-        Alert.alert('Error', data.message || 'Something went wrong');
+        if (data.errors) {
+          var messages = Object.values(data.errors).flat().join('\n');
+          Alert.alert('Validation Error', messages);
+        } else {
+          Alert.alert('Error', data.message || 'Something went wrong');
+        }
       }
     } catch (error) {
       setLoading(false);
-      Alert.alert('Error', 'Network error');
-      console.error(error);
+      console.error('Network error:', error);
+      Alert.alert('Error', 'Network error, please try again.');
     }
   };
 
@@ -143,8 +153,7 @@ export default function RegisterAdd({ setActiveScreen }) {
       <TouchableOpacity
         style={[styles.button, loading && styles.disabledButton]}
         onPress={handleRegister}
-        disabled={loading}
-      >
+        disabled={loading}>
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
@@ -155,8 +164,7 @@ export default function RegisterAdd({ setActiveScreen }) {
       {/* Back Button */}
       <TouchableOpacity
         style={[styles.button, styles.backButton]}
-        onPress={handleLoginScreen}
-      >
+        onPress={handleLoginScreen}>
         <Text style={styles.buttonText}>Back</Text>
       </TouchableOpacity>
     </View>
@@ -184,6 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#ddd',
+    color: 'black',
   },
   button: {
     backgroundColor: '#007bff',

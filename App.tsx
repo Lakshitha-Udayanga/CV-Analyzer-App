@@ -9,13 +9,13 @@ import AboutApp from './Screen/About/AboutApp';
 
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState('Login'); // default screen
+  const [activeScreen, setActiveScreen] = useState('Login'); 
   const [userData, setUserData] = useState(null);
 
   // when login is successful
   const onLoginSuccess = data => {
     setUserData(data);
-    setActiveScreen('Home'); // go to Home after login
+    setActiveScreen('Home'); 
   };
 
   // logout function

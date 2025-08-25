@@ -120,7 +120,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
       {/* Main Content */}
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.welcomeText}>Welcome {userData.username} 👋</Text>
+        <Text style={styles.welcomeText}>Welcome {userData.name} 👋</Text>
 
         <SafeAreaView style={{width: '100%', padding: 20}}>
           <Button title="Select Resume (PDF/DOC)" onPress={pickFile} />

@@ -12,7 +12,7 @@ import {
   Image,
 } from 'react-native';
 
-const LoginScreen = ({onLoginSuccess, onRegister}) => {
+const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,36 +20,49 @@ const LoginScreen = ({onLoginSuccess, onRegister}) => {
 
   const handleLogin = async () => {
     setLoading(true);
+
     if (!email || !password) {
-      Alert.alert('Error', 'Username and Password are required');
+      Alert.alert('Error', 'Email and Password are required');
       setLoading(false);
       return;
     }
 
-    const baseUrl = 'https://cicvaccinecenter.sltech.lk';
-
     try {
-      const urlEndPoint = `${baseUrl}/api/login?username=${encodeURIComponent(
-        email,
-      )}&password=${encodeURIComponent(password)}`;
-
-      const response = await fetch(urlEndPoint, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
+      const baseUrl = 'https://resumeanalyzer.sltech.lk';
+      const response = await fetch(`${baseUrl}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
 
       const data = await response.json();
 
-      if (data.username && data.username.trim() !== '') {
-        Alert.alert('Login Successful', `Welcome, ${data.username || 'User'}`);
-        onLoginSuccess(data);
+      if (response.ok && data.user) {
+        const user = {
+          ...data.user,
+          baseUrl: baseUrl,
+        };
+        Alert.alert('Login Successful', `Welcome ${user.name}`);
+        onLoginSuccess(user);
+        setEmail('');
+        setPassword('');
       } else {
-        Alert.alert('Login Failed', data.message || 'Invalid credentials');
+        Alert.alert(
+          'Login Failed',
+          data.message || 'Invalid email or password',
+        );
       }
     } catch (error) {
       console.error('Login Error:', error);
       Alert.alert('Error', 'Unable to connect to the server.');
     }
+
     setLoading(false);
   };
 
@@ -71,7 +84,7 @@ const LoginScreen = ({onLoginSuccess, onRegister}) => {
       </Text>
 
       <TextInput
-        placeholder="Username"
+        placeholder="E-Mail"
         placeholderTextColor="#888"
         style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
         value={email}

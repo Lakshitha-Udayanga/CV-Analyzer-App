@@ -29,7 +29,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     Alert.alert('User Profile', 'Profile screen coming soon...', [
       {
         text: 'OK',
-        onPress: () => setActiveScreen('UserProfile'), // ✅ switch after OK
+        onPress: () => setActiveScreen('UserProfile'),
       },
     ]);
   };
@@ -62,21 +62,21 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           style={styles.avatar}
         />
 
-        <Text style={styles.name}>Lakshitha Udayanga</Text>
-        <Text style={styles.email}>lakshitha@example.com</Text>
+        <Text style={styles.name}>{userData.name}</Text>
+        <Text style={styles.email}>{userData.email}</Text>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Name</Text>
-          <Text style={styles.sectionContent}>{userData.username}</Text>
+          <Text style={styles.sectionContent}>{userData.name}</Text>
           <Text style={styles.sectionTitle}>E-Mail</Text>
-          <Text style={styles.sectionContent}>
-            A passionate mobile app developer with experience in React Native,
-            backend APIs, and cross-platform development. Always learning and
-            building.
-          </Text>
+          <Text style={styles.sectionContent}>{userData.email}</Text>
           <Text style={styles.sectionTitle}>Mobile Number</Text>
+          <Text style={styles.sectionContent}>0775255226</Text>
+          <Text style={styles.sectionTitle}>Register No</Text>
+          <Text style={styles.sectionContent}>{userData.user_ref_no}</Text>
+          <Text style={styles.sectionTitle}>Register Date</Text>
           <Text style={styles.sectionContent}>
-            0775255226
+            {new Date(userData.created_at).toLocaleString()}
           </Text>
         </View>
 
