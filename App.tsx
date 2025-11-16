@@ -67,6 +67,7 @@ export default function App() {
           setActiveScreen={setActiveScreen} // ✅ pass here
           onLogout={onLogout}
           onRegister={onRegister}
+          onLoginSuccess={onLoginSuccess}
         />
       )}
 

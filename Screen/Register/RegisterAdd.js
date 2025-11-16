@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 
-export default function RegisterAdd({setActiveScreen}) {
+export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -44,36 +44,39 @@ export default function RegisterAdd({setActiveScreen}) {
     setLoading(true);
 
     try {
+      const baseUrl = 'https://resumeanalyzer.sltech.lk';
       const token =
         'OI5qFHMkPPALwWVTWWiXUbHD1xNxE1N5QwFnkJV3aLe1Nd3TtG3IuOQ2d6VDkQfQZAABlZfFJggxHUms';
-      const response = await fetch(
-        'https://resumeanalyzer.sltech.lk/api/user/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token,
-            Accept: 'application/json',
-          },
-          body: JSON.stringify({
-            first_name: firstName,
-            last_name: lastName,
-            phone: phone,
-            email: email,
-            password: password,
-            password_confirmation: passwordConfirmation,
-          }),
+      const response = await fetch(`${baseUrl}/api/user/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/json',
         },
-      );
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          email: email,
+          password: password,
+          password_confirmation: passwordConfirmation,
+        }),
+      });
 
       const data = await response.json();
       setLoading(false);
 
       if (response.ok) {
-        const user = data.user;
+        const user = {
+          ...data.user,
+          baseUrl: baseUrl,
+          token: token,
+        };
         setUserData(user);
         Alert.alert('Success', 'Registration successful!');
-        setActiveScreen('Login');
+        // setActiveScreen('Login');
+        onLoginSuccess(user);
 
         // Reset form
         setFirstName('');
