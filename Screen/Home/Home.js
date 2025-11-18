@@ -14,6 +14,8 @@ import {
 import React, {useState} from 'react';
 import DocumentPicker from 'react-native-document-picker';
 
+// import RNFS from 'react-native-fs';
+// import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 
 export default function Home({userData, setActiveScreen, onLogout}) {
   const [file, setFile] = useState(null);
@@ -63,24 +65,54 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
   const extractTextFromPDF = async file => {
     try {
-      const base64Data = await RNFS.readFile(file.uri, 'base64');
-      Alert.alert('Error', 'Unable to connect to the server.');
-      const loadingTask = pdfjsLib.getDocument({
-        data: Buffer.from(base64Data, 'base64'),
-      });
+      // const base64Data = await RNFS.readFile(file.uri, 'base64');
+      // Alert.alert('Debug', JSON.stringify(base64Data, null, 2));
+      let filePath = file.uri;
+      Alert.alert('Debug', base64Data.substring(0, 100) + '...');
+      // Convert content:// to actual file path
+      if (filePath.startsWith('content://')) {
+        const stat = await RNFS.stat(file.uri);
+        filePath = stat.path;
+      }
+      const base64Data = await RNFS.readFile(filePath, 'base64');
 
-      const pdf = await loadingTask.promise;
+      // Debug: Only show first 100 chars
+
+      let pdf;
+      try {
+        pdf = await pdfjsLib.getDocument({
+          data: Buffer.from(base64Data, 'base64'),
+        }).promise;
+      } catch (err) {
+        Alert.alert('Error', 'Invalid or corrupted PDF.');
+        return '';
+      }
+
       let fullText = '';
 
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        fullText += content.items.map(i => i.str).join(' ') + '\n';
+        let page;
+        try {
+          page = await pdf.getPage(i);
+        } catch (err) {
+          Alert.alert('Error', 'Unable to read PDF pages.');
+          return '';
+        }
+
+        const content = await page.getTextContent().catch(() => null);
+        if (!content) {
+          Alert.alert('Error', 'Unable to extract PDF text.');
+          return '';
+        }
+
+        fullText += content.items.map(item => item.str).join(' ') + '\n';
       }
 
       return fullText;
     } catch (err) {
-      console.log(err);
+      console.log('Top-level error:', err);
+
+      // Alert.alert('Error', 'Something went wrong while reading the PDF.');
       return '';
     }
   };
@@ -102,11 +134,13 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('resume', {
+      formData.append('pdf', {
         uri: file.uri,
         type: file.type,
         name: file.name,
       });
+
+      Alert.alert('dat format pdf', JSON.stringify(formData, null));
 
       // Replace with your backend API endpoint
       // const response = await fetch(

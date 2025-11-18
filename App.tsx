@@ -6,16 +6,16 @@ import AIChat from './Screen/Home/AIChat';
 import UserProfile from './Screen/User/UserProfile';
 import RegisterAdd from './Screen/Register/RegisterAdd';
 import AboutApp from './Screen/About/AboutApp';
-
+import ForgetPassword from './Screen/ForgetPassword/ForgetPassword';
 
 export default function App() {
-  const [activeScreen, setActiveScreen] = useState('Login'); 
+  const [activeScreen, setActiveScreen] = useState('Login');
   const [userData, setUserData] = useState(null);
 
   // when login is successful
   const onLoginSuccess = data => {
     setUserData(data);
-    setActiveScreen('Home'); 
+    setActiveScreen('Home');
   };
 
   // logout function
@@ -30,12 +30,19 @@ export default function App() {
     setActiveScreen('RegisterAdd');
   };
 
+  // logout function
+  const onForgotPassword = () => {
+    setUserData(null);
+    setActiveScreen('ForgotPassword');
+  };
+
   return (
     <View style={{flex: 1}}>
       {activeScreen === 'Login' && (
-        <LoginScreen onLoginSuccess={onLoginSuccess}
+        <LoginScreen
+          onLoginSuccess={onLoginSuccess}
           onRegister={onRegister}
-        
+          setActiveScreen={setActiveScreen}
         />
       )}
       {activeScreen === 'Home' && (
@@ -76,6 +83,14 @@ export default function App() {
           userData={userData}
           setActiveScreen={setActiveScreen} // ✅ pass here
           onLogout={onLogout}
+        />
+      )}
+
+      {activeScreen === 'ForgetPassword' && (
+        <ForgetPassword
+          userData={userData}
+          setActiveScreen={setActiveScreen}
+          // onLogout={onLogout}
         />
       )}
     </View>

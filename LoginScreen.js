@@ -12,8 +12,14 @@ import {
   Image,
 } from 'react-native';
 
-const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
-  const isDarkMode = useColorScheme() === 'dark';
+const LoginScreen = ({
+  userData,
+  onLoginSuccess,
+  onRegister,
+  setActiveScreen,
+}) => {
+  // const isDarkMode = useColorScheme() === 'dark';
+  const isDarkMode = useColorScheme() === 'light';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -79,7 +85,8 @@ const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <Image
         source={{
-          uri: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
+          // uri: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
+          uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png',
         }}
         style={styles.logo}
       />
@@ -119,6 +126,10 @@ const LoginScreen = ({userData, onLoginSuccess, onRegister}) => {
         <TouchableOpacity onPress={onRegister} style={styles.button}>
           <Text style={styles.registerButtonText}>Register</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setActiveScreen('ForgetPassword')}>
+          <Text style={styles.forgrtpassword}>Forget Password?</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -150,5 +161,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
     resizeMode: 'contain',
+  },
+  forgrtpassword: {
+    color: '#007bff',
+    fontSize: 18,
+    alignSelf: 'center',
   },
 });

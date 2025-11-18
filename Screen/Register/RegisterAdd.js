@@ -108,6 +108,7 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <TextInput
         style={styles.input}
         placeholder="First Name"
+        placeholderTextColor="#888"
         value={firstName}
         onChangeText={setFirstName}
       />
@@ -116,6 +117,7 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <TextInput
         style={styles.input}
         placeholder="Last Name"
+        placeholderTextColor="#888"
         value={lastName}
         onChangeText={setLastName}
       />
@@ -123,7 +125,8 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <Text style={styles.label}>Phone Number</Text>
       <TextInput
         style={styles.input}
-        placeholder="Phone"
+        placeholder="Phone No"
+        placeholderTextColor="#888"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
@@ -132,7 +135,8 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="E-mail"
+        placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -142,6 +146,7 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#888"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -151,6 +156,7 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <TextInput
         style={styles.input}
         placeholder="Confirm Password"
+        placeholderTextColor="#888"
         value={passwordConfirmation}
         onChangeText={setPasswordConfirmation}
         secureTextEntry
@@ -171,7 +177,7 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
       <TouchableOpacity
         style={[styles.button, styles.backButton]}
         onPress={handleLoginScreen}>
-        <Text style={styles.buttonText}>Back</Text>
+        <Text style={styles.buttonText}>Back to Login</Text>
       </TouchableOpacity>
     </View>
   );
@@ -182,7 +188,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#d8d8d8ff',
+    // backgroundColor: '#d8d8d8ff',
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 28,
