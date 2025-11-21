@@ -14,9 +14,6 @@ import {
 import React, {useState} from 'react';
 import DocumentPicker from 'react-native-document-picker';
 
-// import RNFS from 'react-native-fs';
-// import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-
 export default function Home({userData, setActiveScreen, onLogout}) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -63,60 +60,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     }
   };
 
-  const extractTextFromPDF = async file => {
-    try {
-      // const base64Data = await RNFS.readFile(file.uri, 'base64');
-      // Alert.alert('Debug', JSON.stringify(base64Data, null, 2));
-      let filePath = file.uri;
-      Alert.alert('Debug', base64Data.substring(0, 100) + '...');
-      // Convert content:// to actual file path
-      if (filePath.startsWith('content://')) {
-        const stat = await RNFS.stat(file.uri);
-        filePath = stat.path;
-      }
-      const base64Data = await RNFS.readFile(filePath, 'base64');
-
-      // Debug: Only show first 100 chars
-
-      let pdf;
-      try {
-        pdf = await pdfjsLib.getDocument({
-          data: Buffer.from(base64Data, 'base64'),
-        }).promise;
-      } catch (err) {
-        Alert.alert('Error', 'Invalid or corrupted PDF.');
-        return '';
-      }
-
-      let fullText = '';
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-        let page;
-        try {
-          page = await pdf.getPage(i);
-        } catch (err) {
-          Alert.alert('Error', 'Unable to read PDF pages.');
-          return '';
-        }
-
-        const content = await page.getTextContent().catch(() => null);
-        if (!content) {
-          Alert.alert('Error', 'Unable to extract PDF text.');
-          return '';
-        }
-
-        fullText += content.items.map(item => item.str).join(' ') + '\n';
-      }
-
-      return fullText;
-    } catch (err) {
-      console.log('Top-level error:', err);
-
-      // Alert.alert('Error', 'Something went wrong while reading the PDF.');
-      return '';
-    }
-  };
-
   const handlePDF = async () => {
     if (!file) return Alert.alert('Select a file first');
     const text = await extractTextFromPDF(file);
@@ -125,7 +68,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
   // Upload & Analyze File
   const uploadFile = async () => {
-    //openai Secret Key=   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
     if (!file) {
       Alert.alert('Error', 'Please select a resume first.');
       return;
@@ -136,64 +78,62 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       const formData = new FormData();
       formData.append('pdf', {
         uri: file.uri,
-        type: file.type,
+        type: file.mimeType || file.type || 'application/pdf',
         name: file.name,
       });
 
-      Alert.alert('dat format pdf', JSON.stringify(formData, null));
+      const response = await fetch(`${userData.baseUrl}/api/resume/upload`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+          Accept: 'application/json',
+        },
+      });
 
-      // Replace with your backend API endpoint
+      const data = await response.json();
+      Alert.alert('Response', JSON.stringify(data));
+
+      // const OPENAI_API_KEY =
+      //   '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';
+
       // const response = await fetch(
-      //   'https://your-backend-url.com/api/analyze-resume',
+      //   'https://api.openai.com/v1/chat/completions',
       //   {
       //     method: 'POST',
-      //     body: formData,
       //     headers: {
-      //       'Content-Type': 'multipart/form-data',
+      //       'Content-Type': 'application/json',
+      //       Authorization: `Bearer ${OPENAI_API_KEY}`,
       //     },
+      //     body: JSON.stringify({
+      //       model: 'gpt-4.1-mini',
+      //       messages: [
+      //         {
+      //           role: 'system',
+      //           content: 'You are a career assistant analyzing resumes.',
+      //         },
+      //         {
+      //           role: 'user',
+      //           content: 'Analyze this resume text: ... (hello)',
+      //         },
+      //       ],
+      //     }),
       //   },
       // );
 
-      const OPENAI_API_KEY =
-        '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';
+      // // ✅ Read JSON only once
+      // const data = await response.json();
 
-      const response = await fetch(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-4.1-mini',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a career assistant analyzing resumes.',
-              },
-              {
-                role: 'user',
-                content: 'Analyze this resume text: ... (hello)',
-              },
-            ],
-          }),
-        },
-      );
+      // // Show full API response for debugging
+      // Alert.alert('OpenAI Response Debug', JSON.stringify(data, null, 2));
 
-      // ✅ Read JSON only once
-      const data = await response.json();
+      // // Extract AI message text safely
+      // const aiMessage =
+      //   data?.choices?.[0]?.message?.content || 'No content returned';
 
-      // Show full API response for debugging
-      Alert.alert('OpenAI Response Debug', JSON.stringify(data, null, 2));
-
-      // Extract AI message text safely
-      const aiMessage =
-        data?.choices?.[0]?.message?.content || 'No content returned';
-
-      // Log and set state
-      console.log(aiMessage);
-      setAnalysisResult(aiMessage);
+      // // Log and set state
+      // console.log(aiMessage);
+      // setAnalysisResult(aiMessage);
 
       // const result = await response.json();
       // setAnalysisResult(result);
