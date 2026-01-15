@@ -82,7 +82,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         name: file.name,
       });
 
-      const response = await fetch(`${userData.baseUrl}/api/resume/upload`, {
+      const response = await fetch(`${userData.baseUrl}/api/resume/upload/${userData.id}`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -235,7 +235,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       {/* Bottom NavBar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
-          <Text style={styles.downnavTitle}>Resume Analyzer</Text>
+          <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>

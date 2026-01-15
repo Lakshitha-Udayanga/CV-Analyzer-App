@@ -58,7 +58,7 @@ export default function ForgotPassword({userData, setActiveScreen}) {
     <View style={styles.container}>
       <Text style={styles.title}>Forgot Password?</Text>
       <Text style={styles.subtitle}>
-        Enter your email to receive a password reset link.
+        Enter your email to receive a temporary password. (Valid for 15 minutes only)
       </Text>
 
       <TextInput
@@ -78,7 +78,7 @@ export default function ForgotPassword({userData, setActiveScreen}) {
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.resetText}>Send Reset Link</Text>
+          <Text style={styles.resetText}>Send Reset</Text>
         )}
       </TouchableOpacity>
 

@@ -28,7 +28,7 @@ const LoginScreen = ({
     setLoading(true);
 
     if (!email || !password) {
-      Alert.alert('Error', 'Email and Password are required');
+      Alert.alert('Error', 'Email and password cannot be empty');
       setLoading(false);
       return;
     }
@@ -86,7 +86,7 @@ const LoginScreen = ({
       <Image
         source={{
           // uri: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
-          uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png',  //https://cdn-icons-png.flaticon.com/512/3135/3135715.png
+          uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', //https://cdn-icons-png.flaticon.com/512/3135/3135715.png
         }}
         style={styles.logo}
       />

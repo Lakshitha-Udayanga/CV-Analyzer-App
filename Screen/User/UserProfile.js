@@ -26,7 +26,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
   };
 
   const deleteAccount = async () => {
-
     Alert.alert(
       'Delete Account',
       'Are you sure you want to delete your account?',
@@ -127,12 +126,17 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         <TouchableOpacity style={styles.logoutButton} onPress={deleteAccount}>
           <Text style={styles.logoutText}>Delete Account</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.editButton} onPress={deleteAccount}>
+          <Text style={styles.editText}>Edit Account</Text>
+        </TouchableOpacity>
+
         <Text style={styles.sectionContent}></Text>
         {/* </View> */}
       </ScrollView>
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
-          <Text style={styles.downnavTitle}>Resume Analyzer</Text>
+          <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveScreen('AboutApp')}>
@@ -152,6 +156,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f9f9f9',
   },
+
+  pdf: {
+    flex: 1,
+  },
+
   scrollContainer: {
     alignItems: 'center',
     paddingVertical: 30,
@@ -231,9 +240,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
   },
+
+  editButton: {
+    backgroundColor: '#1d5dbd',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    width: 95,
+    marginTop: 10,
+  },
   logoutText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  editText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    alignItems: 'center',
   },
 
   bottomNav: {

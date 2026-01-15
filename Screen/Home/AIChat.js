@@ -150,7 +150,7 @@ export default function AIChat({userData, setActiveScreen, onLogout}) {
 
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
-          <Text style={styles.downnavTitle}>Resume Analyzer</Text>
+          <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
