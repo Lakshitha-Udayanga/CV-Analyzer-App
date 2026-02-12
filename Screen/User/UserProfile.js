@@ -9,6 +9,7 @@ import {
   Pressable,
   TouchableOpacity,
   Alert,
+  Linking,
 } from 'react-native';
 
 export default function Home({userData, setActiveScreen, onLogout}) {
@@ -77,6 +78,26 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     ]);
   };
 
+  const cvList = userData?.cv_lists ?? [];
+
+  const baseUrl = 'https://cvanalyzer.sltech.lk';
+
+  const openCV = async path => {
+    if (!path) {
+      Alert.alert('Invalid URL');
+      return;
+    }
+
+    const url = path.startsWith('http') ? path : `${baseUrl}${path}`;
+
+    try {
+      await Linking.openURL(url);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Cannot open file');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
@@ -121,13 +142,35 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           <Text style={styles.sectionContent}>
             {new Date(userData.created_at).toLocaleString()}
           </Text>
+          <Text style={styles.sectionTitle}></Text>
+
+          <ScrollView style={styles.cvContainer}>
+            <Text style={styles.cvSectionTitle}>
+              =================== Uploaded CV List =====================
+            </Text>
+
+            {cvList.length > 0 ? (
+              cvList.map((item, index) => (
+                <TouchableOpacity
+                  key={item.id || index}
+                  onPress={() => openCV(item.file_path)}
+                  style={{marginBottom: 10}}>
+                  <Text style={styles.linkText}>View CV {index + 1}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text>No CVs Available</Text>
+            )}
+          </ScrollView>
         </View>
 
         <TouchableOpacity style={styles.logoutButton} onPress={deleteAccount}>
           <Text style={styles.logoutText}>Delete Account</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.editButton} onPress={deleteAccount}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => setActiveScreen('EditAccount')}>
           <Text style={styles.editText}>Edit Account</Text>
         </TouchableOpacity>
 
@@ -265,5 +308,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+  },
+
+  cvContainer: {
+    marginBottom: 30,
+    fontWeight: 'bold',
+  },
+
+  cvSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  linkText: {
+    fontSize: 14,
+    color: 'blue',
+    textDecorationLine: 'underline',
+    marginBottom: 10,
   },
 });

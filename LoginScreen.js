@@ -34,7 +34,7 @@ const LoginScreen = ({
     }
 
     try {
-      const baseUrl = 'https://resumeanalyzer.sltech.lk';
+      const baseUrl = 'https://cvanalyzer.sltech.lk';
       const token =
         'OI5qFHMkPPALwWVTWWiXUbHD1xNxE1N5QwFnkJV3aLe1Nd3TtG3IuOQ2d6VDkQfQZAABlZfFJggxHUms';
       const response = await fetch(`${baseUrl}/api/login`, {

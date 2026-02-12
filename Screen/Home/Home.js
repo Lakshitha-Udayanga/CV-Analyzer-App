@@ -147,7 +147,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     <View style={styles.container}>
       {/* Top Navigation Bar */}
       <View style={styles.navBar}>
-        <Text style={styles.navTitle}>Resume Analyzer</Text>
+        <Text style={styles.navTitle}>CV Analyzer</Text>
         <View style={styles.navRight}>
           {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>

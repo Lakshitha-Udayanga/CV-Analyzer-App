@@ -7,6 +7,8 @@ import UserProfile from './Screen/User/UserProfile';
 import RegisterAdd from './Screen/Register/RegisterAdd';
 import AboutApp from './Screen/About/AboutApp';
 import ForgetPassword from './Screen/ForgetPassword/ForgetPassword';
+import EditAccount from './Screen/User/EditAccount';
+
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState('Login');
@@ -92,6 +94,12 @@ export default function App() {
           setActiveScreen={setActiveScreen}
           // onLogout={onLogout}
         />
+      )}
+
+      {activeScreen === 'EditAccount' && (
+        <EditAccount userData={userData} setActiveScreen={setActiveScreen} 
+          onLogout={onLogout}
+          />
       )}
     </View>
   );
