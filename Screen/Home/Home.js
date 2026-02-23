@@ -82,58 +82,23 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         name: file.name,
       });
 
-      const response = await fetch(`${userData.baseUrl}/api/resume/upload/${userData.id}`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-          Accept: 'application/json',
+      const response = await fetch(
+        `${userData.baseUrl}/api/resume/upload/${userData.id}`,
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${userData.token}`,
+            Accept: 'application/json',
+          },
         },
-      });
+      );
 
       const data = await response.json();
       Alert.alert('Response', JSON.stringify(data));
 
-      // const OPENAI_API_KEY =
-      //   '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';
-
-      // const response = await fetch(
-      //   'https://api.openai.com/v1/chat/completions',
-      //   {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //       Authorization: `Bearer ${OPENAI_API_KEY}`,
-      //     },
-      //     body: JSON.stringify({
-      //       model: 'gpt-4.1-mini',
-      //       messages: [
-      //         {
-      //           role: 'system',
-      //           content: 'You are a career assistant analyzing resumes.',
-      //         },
-      //         {
-      //           role: 'user',
-      //           content: 'Analyze this resume text: ... (hello)',
-      //         },
-      //       ],
-      //     }),
-      //   },
-      // );
-
-      // // ✅ Read JSON only once
-      // const data = await response.json();
-
-      // // Show full API response for debugging
-      // Alert.alert('OpenAI Response Debug', JSON.stringify(data, null, 2));
-
-      // // Extract AI message text safely
-      // const aiMessage =
-      //   data?.choices?.[0]?.message?.content || 'No content returned';
-
-      // // Log and set state
-      // console.log(aiMessage);
-      // setAnalysisResult(aiMessage);
+      setAnalysisResult(data.parsed_data); // ✅ SAVE RESPONSE
+      setLoading(false);
 
       // const result = await response.json();
       // setAnalysisResult(result);
@@ -142,6 +107,22 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     }
     setLoading(false);
   };
+
+  const renderList = (title, items, color) => (
+    <View style={[styles.card, {borderTopColor: color}]}>
+      <Text style={[styles.cardTitle, {color}]}>{title}</Text>
+
+      {items && items.length > 0 ? (
+        items.map((item, index) => (
+          <Text key={index} style={styles.listItem}>
+            • {item}
+          </Text>
+        ))
+      ) : (
+        <Text style={styles.emptyText}>No {title.toLowerCase()} detected.</Text>
+      )}
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -187,48 +168,48 @@ export default function Home({userData, setActiveScreen, onLogout}) {
             />
           </View>
 
-          <View style={styles.spacer}>
-            <Button
-              title="Extract Text"
-              onPress={handlePDF}
-              disabled={loading}
-            />
-          </View>
           {loading && (
             <ActivityIndicator size="large" style={{marginTop: 20}} />
           )}
 
           {/* Analysis Results */}
           {analysisResult && (
-            <View style={{marginTop: 20}}>
-              <Text style={{fontWeight: 'bold', fontSize: 18}}>Summary:</Text>
-              <Text>{analysisResult.summary_text}</Text>
+            <>
+              {/* Summary */}
+              <View style={[styles.card, {borderTopColor: '#2f80ed'}]}>
+                <Text style={[styles.cardTitle, {color: '#2f80ed'}]}>
+                  Professional Summary
+                </Text>
+                <Text style={styles.summaryText}>{analysisResult.summary}</Text>
+              </View>
 
-              <Text style={{fontWeight: 'bold', marginTop: 15}}>
-                Strengths:
-              </Text>
-              {analysisResult.strengths?.map((s, idx) => (
-                <Text key={idx}>• {s.description}</Text>
-              ))}
+              {/* Strengths */}
+              {renderList('Strengths', analysisResult.strengths, '#27ae60')}
 
-              <Text style={{fontWeight: 'bold', marginTop: 15}}>
-                Weaknesses:
-              </Text>
-              {analysisResult.weaknesses?.map((w, idx) => (
-                <Text key={idx}>• {w.description}</Text>
-              ))}
+              {/* Skills */}
+              {renderList('Technical Skills', analysisResult.technical_skills, '#2d9cdb')}
 
-              <Text style={{fontWeight: 'bold', marginTop: 15}}>
-                Job Recommendations:
-              </Text>
-              {analysisResult.job_recommendations?.map((job, idx) => (
-                <View key={idx} style={{marginBottom: 10}}>
-                  <Text style={{fontWeight: 'bold'}}>{job.job_title}</Text>
-                  <Text>{job.job_description}</Text>
-                </View>
-              ))}
-            </View>
+              {renderList('Soft Skills', analysisResult.soft_skills, '#db812d')}
+
+              {/* Certificates */}
+              {renderList(
+                'Certificates',
+                analysisResult.certificates,
+                '#f2c94c',
+              )}
+
+               {/* Weaknesses */}
+              {renderList('Weaknesses', analysisResult.weaknesses, '#eb5757')}
+            </>
           )}
+
+          <View style={styles.spacer}>
+            <Button
+              title="RECOMMENDATIONS JOBS"
+              onPress={handlePDF}
+              disabled={loading}
+            />
+          </View>
         </SafeAreaView>
       </ScrollView>
 
@@ -289,4 +270,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   downnavTitle: {fontSize: 18, fontWeight: 'bold', color: '#fff'},
+
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderTopWidth: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  summaryText: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: '#333',
+  },
+
+  listItem: {
+    fontSize: 14,
+    marginBottom: 6,
+    color: '#444',
+  },
+
+  emptyText: {
+    fontSize: 14,
+    color: '#999',
+    fontStyle: 'italic',
+  },
 });
