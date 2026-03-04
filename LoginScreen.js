@@ -82,54 +82,57 @@ const LoginScreen = ({
         styles.container,
         {backgroundColor: isDarkMode ? '#000' : '#fff'},
       ]}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Image
-        source={{
-          // uri: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
-          uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', //https://cdn-icons-png.flaticon.com/512/3135/3135715.png
-        }}
-        style={styles.logo}
-      />
-      <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
-        Login
-      </Text>
+      {/* Card Box */}
+      <View style={styles.card}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <Image
+          source={{
+            // uri: 'https://firebase.google.com/downloads/brand-guidelines/PNG/logo-logomark.png',
+            uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135768.png', //https://cdn-icons-png.flaticon.com/512/3135/3135715.png
+          }}
+          style={styles.logo}
+        />
+        <Text style={[styles.title, {color: isDarkMode ? '#fff' : '#000'}]}>
+          Login
+        </Text>
 
-      <TextInput
-        placeholder="E-Mail"
-        placeholderTextColor="#888"
-        style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
-        value={email}
-        onChangeText={setEmail}
-      />
+        <TextInput
+          placeholder="E-Mail"
+          placeholderTextColor="#888"
+          style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
+          value={email}
+          onChangeText={setEmail}
+        />
 
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#888"
-        style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor="#888"
+          style={[styles.input, {color: isDarkMode ? '#fff' : '#000'}]}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
 
-      <View style={{gap: 10}}>
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={[styles.button, loading && styles.disabledButton]}
-          disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Login</Text>
-          )}
-        </TouchableOpacity>
+        <View style={{gap: 10}}>
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={[styles.button, loading && styles.disabledButton]}
+            disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={onRegister} style={styles.button}>
-          <Text style={styles.registerButtonText}>Register</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={onRegister} style={styles.button}>
+            <Text style={styles.registerButtonText}>Register</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActiveScreen('ForgetPassword')}>
-          <Text style={styles.forgrtpassword}>Forget Password?</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => setActiveScreen('ForgetPassword')}>
+            <Text style={styles.forgrtpassword}>Forget Password?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -166,5 +169,22 @@ const styles = StyleSheet.create({
     color: '#007bff',
     fontSize: 18,
     alignSelf: 'center',
+  },
+
+  card: {
+    width: '100%',
+    // height: '67%',
+    backgroundColor: '#fafafa',
+    borderRadius: 15,
+    padding: 20,
+
+    // Shadow (iOS)
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+
+    // Shadow (Android)
+    elevation: 5,
   },
 });

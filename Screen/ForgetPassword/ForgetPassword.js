@@ -4,10 +4,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import styles from '../styles/ForgetPasswordStyles';
+
 
 export default function ForgotPassword({userData, setActiveScreen}) {
   const [email, setEmail] = useState('');
@@ -56,6 +57,8 @@ export default function ForgotPassword({userData, setActiveScreen}) {
 
   return (
     <View style={styles.container}>
+        {/* Card Box */}
+      <View style={styles.card}>
       <Text style={styles.title}>Forgot Password?</Text>
       <Text style={styles.subtitle}>
         Enter your email to receive a temporary password. (Valid for 15 minutes only)
@@ -88,62 +91,8 @@ export default function ForgotPassword({userData, setActiveScreen}) {
         onPress={() => setActiveScreen('Login')}>
         <Text style={styles.buttonText}>Back to Login</Text>
       </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 25,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 20,
-    fontSize: 16,
-  },
-  resetButton: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  resetText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  backToLogin: {
-    textAlign: 'center',
-    color: '#007bff',
-    fontSize: 16,
-    marginTop: 10,
-  },
-  backButton: {
-    backgroundColor: '#dc3545',
-    paddingVertical: 14,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-});
