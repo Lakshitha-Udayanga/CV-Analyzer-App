@@ -82,7 +82,6 @@ const LoginScreen = ({
         styles.container,
         {backgroundColor: isDarkMode ? '#000' : '#fff'},
       ]}>
-      {/* Card Box */}
       <View style={styles.card}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <Image
@@ -173,7 +172,6 @@ const styles = StyleSheet.create({
 
   card: {
     width: '100%',
-    // height: '67%',
     backgroundColor: '#fafafa',
     borderRadius: 15,
     padding: 20,

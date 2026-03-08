@@ -42,7 +42,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     ]);
   };
 
-  // Pick File Function
   const pickFile = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -69,7 +68,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
   // Upload & Analyze File
   const uploadFile = async () => {
     if (!file) {
-      Alert.alert('Error', 'Please select a resume first.');
+      Alert.alert('Error', 'Please select a cv first.');
       return;
     }
 
@@ -95,9 +94,10 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       );
 
       const data = await response.json();
-      Alert.alert('Response', JSON.stringify(data));
+      // Alert.alert('Response', JSON.stringify(data));
+      Alert.alert('Login Successful', `CV Uploaded and analyzed successfully.`);
 
-      setAnalysisResult(data.parsed_data); // ✅ SAVE RESPONSE
+      setAnalysisResult(data.parsed_data);
       setLoading(false);
 
       // const result = await response.json();
@@ -126,11 +126,9 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
   return (
     <View style={styles.container}>
-      {/* Top Navigation Bar */}
       <View style={styles.navBar}>
         <Text style={styles.navTitle}>CV Analyzer</Text>
         <View style={styles.navRight}>
-          {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>
             <Image
               source={{
@@ -140,19 +138,17 @@ export default function Home({userData, setActiveScreen, onLogout}) {
             />
           </Pressable>
 
-          {/* Logout Button */}
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Main Content */}
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.welcomeText}>Welcome {userData.name} 👋</Text>
 
         <SafeAreaView style={{width: '100%', padding: 20}}>
-          <Button title="Select Resume (PDF/DOC)" onPress={pickFile} />
+          <Button title="Select CV (PDF/DOC)" onPress={pickFile} />
 
           {file && (
             <View style={{marginVertical: 10}}>
@@ -172,10 +168,8 @@ export default function Home({userData, setActiveScreen, onLogout}) {
             <ActivityIndicator size="large" style={{marginTop: 20}} />
           )}
 
-          {/* Analysis Results */}
           {analysisResult && (
             <>
-              {/* Summary */}
               <View style={[styles.card, {borderTopColor: '#2f80ed'}]}>
                 <Text style={[styles.cardTitle, {color: '#2f80ed'}]}>
                   Professional Summary
@@ -183,22 +177,22 @@ export default function Home({userData, setActiveScreen, onLogout}) {
                 <Text style={styles.summaryText}>{analysisResult.summary}</Text>
               </View>
 
-              {/* Strengths */}
               {renderList('Strengths', analysisResult.strengths, '#27ae60')}
 
-              {/* Skills */}
-              {renderList('Technical Skills', analysisResult.technical_skills, '#2d9cdb')}
+              {renderList(
+                'Technical Skills',
+                analysisResult.technical_skills,
+                '#2d9cdb',
+              )}
 
               {renderList('Soft Skills', analysisResult.soft_skills, '#db812d')}
 
-              {/* Certificates */}
               {renderList(
                 'Certificates',
                 analysisResult.certificates,
                 '#f2c94c',
               )}
 
-               {/* Weaknesses */}
               {renderList('Weaknesses', analysisResult.weaknesses, '#eb5757')}
             </>
           )}
@@ -213,18 +207,15 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         </SafeAreaView>
       </ScrollView>
 
-      {/* Bottom NavBar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
           <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
+        {/* <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
           <Text style={styles.downnavTitle}>AI Chat</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
 }
-
-

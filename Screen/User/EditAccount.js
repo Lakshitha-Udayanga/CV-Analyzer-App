@@ -99,7 +99,6 @@ export default function EditAccount({userData, setActiveScreen, onLogout}) {
       <View style={styles.navBar}>
         <Text style={styles.navTitle}>Profile Edit</Text>
         <View style={styles.navRight}>
-          {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>
             <Image
               source={{
@@ -109,7 +108,6 @@ export default function EditAccount({userData, setActiveScreen, onLogout}) {
             />
           </Pressable>
 
-          {/* Logout Button */}
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
@@ -117,7 +115,6 @@ export default function EditAccount({userData, setActiveScreen, onLogout}) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Card Box */}
         <View style={styles.card}>
           <Text style={styles.title}>Edit Account</Text>
 
@@ -140,7 +137,6 @@ export default function EditAccount({userData, setActiveScreen, onLogout}) {
             keyboardType="phone-pad"
           />
 
-          {/* Password Fields */}
           <Text style={styles.label}>New Password</Text>
           <TextInput
             style={styles.input}

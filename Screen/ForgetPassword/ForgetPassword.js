@@ -57,7 +57,6 @@ export default function ForgotPassword({userData, setActiveScreen}) {
 
   return (
     <View style={styles.container}>
-        {/* Card Box */}
       <View style={styles.card}>
       <Text style={styles.title}>Forgot Password?</Text>
       <Text style={styles.subtitle}>
@@ -85,7 +84,6 @@ export default function ForgotPassword({userData, setActiveScreen}) {
         )}
       </TouchableOpacity>
 
-      {/* Back Button */}
       <TouchableOpacity
         style={[styles.button, styles.backButton]}
         onPress={() => setActiveScreen('Login')}>

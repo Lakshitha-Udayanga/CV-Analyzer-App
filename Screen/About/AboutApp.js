@@ -30,7 +30,7 @@ export default function AboutApp({userData, setActiveScreen, onLogout}) {
     Alert.alert('User Profile', 'Profile screen coming soon...', [
       {
         text: 'OK',
-        onPress: () => setActiveScreen('UserProfile'), // ✅ switch after OK
+        onPress: () => setActiveScreen('UserProfile'), 
       },
     ]);
   };
@@ -40,7 +40,6 @@ export default function AboutApp({userData, setActiveScreen, onLogout}) {
       <View style={styles.navBar}>
         <Text style={styles.navTitle}>About Application</Text>
         <View style={styles.navRight}>
-          {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>
             <Image
               source={{
@@ -50,7 +49,6 @@ export default function AboutApp({userData, setActiveScreen, onLogout}) {
             />
           </Pressable>
 
-          {/* Logout Button */}
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
@@ -76,9 +74,9 @@ export default function AboutApp({userData, setActiveScreen, onLogout}) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Skills</Text>
+          <Text style={styles.sectionTitle}>App About</Text>
           <Text style={styles.sectionContent}>
-            React Native, Laravel, MySQL, Docker, Python
+           Built with React Native, Laravel, MySQL, and Python, this AI-powered app analyzes CVs and recommends the best job opportunities for Sri Lankan job seekers.
           </Text>
         </View>
       </ScrollView>
@@ -87,9 +85,9 @@ export default function AboutApp({userData, setActiveScreen, onLogout}) {
           <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
+        {/* <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
           <Text style={styles.downnavTitle}>AI Chat</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   );

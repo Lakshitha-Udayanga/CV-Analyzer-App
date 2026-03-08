@@ -102,7 +102,6 @@ export default function AIChat({userData, setActiveScreen, onLogout}) {
       <View style={styles.navBar}>
         <Text style={styles.navTitle}>AI Chat</Text>
         <View style={styles.navRight}>
-          {/* Profile Image */}
           <Pressable onPress={goToUserProfile}>
             <Image
               source={{
@@ -112,7 +111,6 @@ export default function AIChat({userData, setActiveScreen, onLogout}) {
             />
           </Pressable>
 
-          {/* Logout Button */}
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>

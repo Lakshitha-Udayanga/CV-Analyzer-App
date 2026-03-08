@@ -176,7 +176,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         </TouchableOpacity>
 
         <Text style={styles.sectionContent}></Text>
-        {/* </View> */}
       </ScrollView>
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
@@ -187,9 +186,9 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           <Text style={styles.downnavTitle}>About App</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
+        {/* <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
           <Text style={styles.downnavTitle}>AI Chat</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </SafeAreaView>
   );

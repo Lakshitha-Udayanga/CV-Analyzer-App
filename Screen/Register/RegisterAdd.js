@@ -176,7 +176,6 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
           )}
         </TouchableOpacity>
 
-        {/* Back Button */}
         <TouchableOpacity
           style={[styles.button, styles.backButton]}
           onPress={handleLoginScreen}>
