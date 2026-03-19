@@ -117,3 +117,28 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+/**
+ * Fix for React Native 0.76.0 autolinking bug on Windows when project path contains spaces.
+ * This script ensures that paths in the generated Android-autolinking.cmake are correctly quoted.
+ */
+tasks.configureEach { task ->
+    if (task.name.startsWith("generateAutolinkingNewArchitectureFiles")) {
+        task.doLast {
+            def jniDir = project.layout.buildDirectory.dir("generated/autolinking/src/main/jni").get().asFile
+            def cmakeFile = new File(jniDir, "Android-autolinking.cmake")
+            if (cmakeFile.exists()) {
+                logger.info("Fixing spaces in ${cmakeFile.path}")
+                def content = cmakeFile.text
+                // Ensure add_subdirectory paths are quoted
+                content = content.replaceAll(/add_subdirectory\((.+?) ([^ ]+?)\)/) { match, path, buildDir ->
+                    if (!path.startsWith('"')) {
+                        return "add_subdirectory(\"${path.trim()}\" ${buildDir.trim()})"
+                    }
+                    return match
+                }
+                cmakeFile.text = content
+            }
+        }
+    }
+}

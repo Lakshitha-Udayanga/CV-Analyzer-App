@@ -13,6 +13,20 @@ import {
 import React, {useState} from 'react';
 import DocumentPicker from 'react-native-document-picker';
 import styles from '../styles/HomeStyles';
+import {PieChart} from 'react-native-chart-kit';
+import {Dimensions} from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
+
+const chartColors = [
+  '#2f80ed',
+  '#27ae60',
+  '#f2c94c',
+  '#eb5757',
+  '#9b59b6',
+  '#2d9cdb',
+  '#db812d',
+];
 
 export default function Home({userData, setActiveScreen, onLogout}) {
   const [file, setFile] = useState(null);
@@ -51,7 +65,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           DocumentPicker.types.docx,
         ],
       });
-      setFile(res[0]); // store first selected file
+      setFile(res[0]);
     } catch (err) {
       if (!DocumentPicker.isCancel(err)) {
         Alert.alert('Error', 'Could not select file.');
@@ -97,7 +111,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       // Alert.alert('Response', JSON.stringify(data));
       Alert.alert('Login Successful', `CV Uploaded and analyzed successfully.`);
 
-      setAnalysisResult(data.parsed_data);
+      setAnalysisResult(data);
       setLoading(false);
 
       // const result = await response.json();
@@ -123,6 +137,57 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       )}
     </View>
   );
+
+  const renderJobRecommendations = jobs => {
+    if (!jobs || jobs.length === 0) return null;
+
+    const chartData = jobs.map((job, index) => ({
+      name: job.job_title || 'N/A',
+      population: parseInt(job.match_score) || 0,
+      color: chartColors[index % chartColors.length],
+      legendFontColor: '#333',
+      legendFontSize: 12,
+    }));
+
+    return (
+      <View style={styles.jobContainer}>
+        <Text style={styles.cvSectionTitle}>
+          ============== Recommended Jobs ==================
+        </Text>
+
+        <View style={styles.chartContainer}>
+          <Text
+            style={[styles.cardTitle, {color: '#333', textAlign: 'center'}]}>
+            Job Match Portfolio
+          </Text>
+          <PieChart
+            data={chartData}
+            width={screenWidth - 80}
+            height={200}
+            chartConfig={{
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            accessor={'population'}
+            backgroundColor={'transparent'}
+            paddingLeft={'15'}
+            absolute
+          />
+        </View>
+
+        {jobs.map((job, index) => (
+          <View key={index} style={styles.jobItem}>
+            <Text style={styles.jobTitle}>{job.job_title}</Text>
+            <Text style={styles.jobScore}>Match Score: {job.match_score}%</Text>
+            {job.company_name && (
+              <Text style={styles.jobDescription}>
+                Company: {job.company_name}
+              </Text>
+            )}
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -158,7 +223,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
           <View style={styles.spacer}>
             <Button
-              title="Upload & Analyze"
+              title="Analyze & RECOMMENDATIONS JOBS"
               onPress={uploadFile}
               disabled={loading}
             />
@@ -168,42 +233,57 @@ export default function Home({userData, setActiveScreen, onLogout}) {
             <ActivityIndicator size="large" style={{marginTop: 20}} />
           )}
 
-          {analysisResult && (
+          {analysisResult && analysisResult.parsed_data && (
             <>
               <View style={[styles.card, {borderTopColor: '#2f80ed'}]}>
                 <Text style={[styles.cardTitle, {color: '#2f80ed'}]}>
                   Professional Summary
                 </Text>
-                <Text style={styles.summaryText}>{analysisResult.summary}</Text>
+                <Text style={styles.summaryText}>
+                  {analysisResult.parsed_data.summary}
+                </Text>
               </View>
 
-              {renderList('Strengths', analysisResult.strengths, '#27ae60')}
+              {renderList(
+                'Strengths',
+                analysisResult.parsed_data.strengths,
+                '#27ae60',
+              )}
 
               {renderList(
                 'Technical Skills',
-                analysisResult.technical_skills,
+                analysisResult.parsed_data.skills ||
+                  analysisResult.parsed_data.technical_skills,
                 '#2d9cdb',
               )}
 
-              {renderList('Soft Skills', analysisResult.soft_skills, '#db812d')}
+              {renderList(
+                'Soft Skills',
+                analysisResult.parsed_data.soft_skills,
+                '#db812d',
+              )}
 
               {renderList(
                 'Certificates',
-                analysisResult.certificates,
+                analysisResult.parsed_data.certificates,
                 '#f2c94c',
               )}
 
-              {renderList('Weaknesses', analysisResult.weaknesses, '#eb5757')}
+              {renderList(
+                'Experiences',
+                analysisResult.parsed_data.experiences,
+                '#9b59b6',
+              )}
+
+              {renderList(
+                'Weaknesses',
+                analysisResult.parsed_data.weaknesses,
+                '#eb5757',
+              )}
+
+              {renderJobRecommendations(analysisResult.job_recommendations)}
             </>
           )}
-
-          <View style={styles.spacer}>
-            <Button
-              title="RECOMMENDATIONS JOBS"
-              onPress={handlePDF}
-              disabled={loading}
-            />
-          </View>
         </SafeAreaView>
       </ScrollView>
 
@@ -211,10 +291,6 @@ export default function Home({userData, setActiveScreen, onLogout}) {
         <TouchableOpacity onPress={() => setActiveScreen('Home')}>
           <Text style={styles.downnavTitle}>CV Analyzer</Text>
         </TouchableOpacity>
-
-        {/* <TouchableOpacity onPress={() => setActiveScreen('AIChat')}>
-          <Text style={styles.downnavTitle}>AI Chat</Text>
-        </TouchableOpacity> */}
       </View>
     </View>
   );

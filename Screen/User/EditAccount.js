@@ -57,7 +57,24 @@ export default function EditAccount({userData, setActiveScreen, onLogout}) {
         },
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Update failed.';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.status || errorData.message || errorMessage;
+        } catch (e) {}
+        Alert.alert('Error', errorMessage);
+        return;
+      }
+
+      const responseText = await response.text();
+      if (!responseText) {
+        Alert.alert('Error', 'Empty response from server.');
+        return;
+      }
+
+      const data = JSON.parse(responseText);
       Alert.alert('Response', JSON.stringify(data));
 
       if (response.ok) {

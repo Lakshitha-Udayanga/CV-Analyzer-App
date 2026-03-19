@@ -65,7 +65,30 @@ export default function RegisterAdd({setActiveScreen, onLoginSuccess}) {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Registration failed.';
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.errors) {
+            errorMessage = Object.values(errorData.errors).flat().join('\n');
+          } else {
+            errorMessage = errorData.message || errorMessage;
+          }
+        } catch (e) {}
+        Alert.alert('Error', errorMessage);
+        setLoading(false);
+        return;
+      }
+
+      const responseText = await response.text();
+      if (!responseText) {
+        Alert.alert('Error', 'Empty response from server.');
+        setLoading(false);
+        return;
+      }
+
+      const data = JSON.parse(responseText);
       setLoading(false);
 
       if (response.ok) {

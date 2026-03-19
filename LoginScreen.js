@@ -50,13 +50,35 @@ const LoginScreen = ({
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Login failed. Please check your credentials.';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {}
+        Alert.alert('Login Failed', errorMessage);
+        setLoading(false);
+        return;
+      }
+
+      const responseText = await response.text();
+      if (!responseText) {
+        Alert.alert('Error', 'Empty response from server.');
+        setLoading(false);
+        return;
+      }
+
+      const data = JSON.parse(responseText);
 
       if (response.ok && data.user) {
+        // Use token from response if available, otherwise fallback to hardcoded
+        const userToken = data.token || data.access_token || token;
+
         const user = {
           ...data.user,
           baseUrl: baseUrl,
-          token: token,
+          token: userToken,
         };
         Alert.alert('Login Successful', `Welcome ${user.name}`);
         onLoginSuccess(user);

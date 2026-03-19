@@ -75,6 +75,56 @@ const styles = StyleSheet.create({
     color: '#999',
     fontStyle: 'italic',
   },
+  chartContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+  },
+  jobContainer: {
+    marginTop: 10,
+    width: '100%',
+  },
+  jobItem: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007bff',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+  },
+  jobTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  jobScore: {
+    fontSize: 14,
+    color: '#27ae60',
+    fontWeight: '600',
+    marginTop: 2,
+  },
+  jobDescription: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 5,
+    lineHeight: 18,
+  },
+  cvSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
 });
 
 export default styles;

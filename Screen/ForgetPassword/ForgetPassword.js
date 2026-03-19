@@ -36,7 +36,24 @@ export default function ForgotPassword({userData, setActiveScreen}) {
         body: JSON.stringify({email}),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Forgot password request failed.';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {}
+        Alert.alert('Error', errorMessage);
+        return;
+      }
+
+      const responseText = await response.text();
+      if (!responseText) {
+        Alert.alert('Error', 'Empty response from server.');
+        return;
+      }
+
+      const data = JSON.parse(responseText);
 
       if (data.success) {
         Alert.alert(
