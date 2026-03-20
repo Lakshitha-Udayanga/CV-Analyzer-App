@@ -9,6 +9,7 @@ import {
   Button,
   ActivityIndicator,
   Pressable,
+  Linking,
 } from 'react-native';
 import React, {useState} from 'react';
 import DocumentPicker from 'react-native-document-picker';
@@ -109,6 +110,8 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
       const data = await response.json();
       // Alert.alert('Response', JSON.stringify(data));
+      console.log(`Response: ${JSON.stringify(data)}`);
+
       Alert.alert('Login Successful', `CV Uploaded and analyzed successfully.`);
 
       setAnalysisResult(data);
@@ -120,6 +123,11 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       Alert.alert('Error', 'Failed to upload & analyze resume.');
     }
     setLoading(false);
+  };
+
+  const clearResponse = () => {
+    setFile(null);
+    setAnalysisResult(null);
   };
 
   const renderList = (title, items, color) => (
@@ -142,8 +150,8 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     if (!jobs || jobs.length === 0) return null;
 
     const chartData = jobs.map((job, index) => ({
-      name: job.job_title || 'N/A',
-      population: parseInt(job.match_score) || 0,
+      name: job.title || 'N/A',
+      population: Math.round(parseFloat(job.final_score)) || 0,
       color: chartColors[index % chartColors.length],
       legendFontColor: '#333',
       legendFontSize: 12,
@@ -176,12 +184,27 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
         {jobs.map((job, index) => (
           <View key={index} style={styles.jobItem}>
-            <Text style={styles.jobTitle}>{job.job_title}</Text>
-            <Text style={styles.jobScore}>Match Score: {job.match_score}%</Text>
+            <Text style={styles.jobTitle}>{job.title}</Text>
+            <Text style={styles.jobScore}>Match Score: {job.final_score}%</Text>
             {job.company_name && (
               <Text style={styles.jobDescription}>
                 Company: {job.company_name}
               </Text>
+            )}
+            {job.link && (
+              <TouchableOpacity
+                onPress={() => {
+                  const url = job.link.startsWith('http')
+                    ? job.link
+                    : `https://${job.link}`;
+                  Linking.openURL(url).catch(err =>
+                    console.error("Couldn't load page", err),
+                  );
+                }}>
+                <Text style={[styles.jobDescription, {color: '#007bff'}]}>
+                  View Job: {job.link}
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
         ))}
@@ -229,6 +252,14 @@ export default function Home({userData, setActiveScreen, onLogout}) {
             />
           </View>
 
+          <View style={styles.spacer}>
+            <Button
+              title="Clear"
+              onPress={clearResponse}
+              color="#dc3545"
+            />
+          </View>
+
           {loading && (
             <ActivityIndicator size="large" style={{marginTop: 20}} />
           )}
@@ -265,7 +296,8 @@ export default function Home({userData, setActiveScreen, onLogout}) {
 
               {renderList(
                 'Certificates',
-                analysisResult.parsed_data.certificates,
+                analysisResult.parsed_data.certifications ||
+                  analysisResult.parsed_data.certificates,
                 '#f2c94c',
               )}
 
