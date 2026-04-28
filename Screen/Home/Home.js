@@ -14,20 +14,6 @@ import {
 import React, {useState} from 'react';
 import DocumentPicker from 'react-native-document-picker';
 import styles from '../styles/HomeStyles';
-import {PieChart} from 'react-native-chart-kit';
-import {Dimensions} from 'react-native';
-
-const screenWidth = Dimensions.get('window').width;
-
-const chartColors = [
-  '#2f80ed',
-  '#27ae60',
-  '#f2c94c',
-  '#eb5757',
-  '#9b59b6',
-  '#2d9cdb',
-  '#db812d',
-];
 
 export default function Home({userData, setActiveScreen, onLogout}) {
   const [file, setFile] = useState(null);
@@ -109,7 +95,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
       );
 
       const data = await response.json();
-      // Alert.alert('Response', JSON.stringify(data));
+      Alert.alert('Response', JSON.stringify(data));
       console.log(`Response: ${JSON.stringify(data)}`);
 
       Alert.alert('Login Successful', `CV Uploaded and analyzed successfully.`);
@@ -146,66 +132,234 @@ export default function Home({userData, setActiveScreen, onLogout}) {
     </View>
   );
 
-  const renderJobRecommendations = jobs => {
-    if (!jobs || jobs.length === 0) return null;
+  const renderJobRecommendations = result => {
+    if (!result) return null;
 
-    const chartData = jobs.map((job, index) => ({
-      name: job.title || 'N/A',
-      population: Math.round(parseFloat(job.final_score)) || 0,
-      color: chartColors[index % chartColors.length],
-      legendFontColor: '#333',
-      legendFontSize: 12,
-    }));
+    const recommendations = result.job_recommendations;
+    const jobsList = result.jobs_list || [];
+
+    if (!recommendations && jobsList.length === 0) return null;
+
+    const bestMatch = recommendations?.best_match;
+
+    const getJobEmoji = (title) => {
+      const lowTitle = title?.toLowerCase() || '';
+      if (lowTitle.includes('developer') || lowTitle.includes('engineer') || lowTitle.includes('software') || lowTitle.includes('tech') || lowTitle.includes('programmer')) return '💻';
+      if (lowTitle.includes('design') || lowTitle.includes('ui') || lowTitle.includes('ux') || lowTitle.includes('graphic') || lowTitle.includes('creative')) return '🎨';
+      if (lowTitle.includes('manager') || lowTitle.includes('lead') || lowTitle.includes('executive') || lowTitle.includes('director')) return '👔';
+      if (lowTitle.includes('marketing') || lowTitle.includes('sales') || lowTitle.includes('business')) return '📈';
+      if (lowTitle.includes('hr') || lowTitle.includes('human') || lowTitle.includes('recruit')) return '👥';
+      if (lowTitle.includes('data') || lowTitle.includes('analyst') || lowTitle.includes('science')) return '📊';
+      if (lowTitle.includes('mobile') || lowTitle.includes('android') || lowTitle.includes('ios')) return '📱';
+      if (lowTitle.includes('cloud') || lowTitle.includes('aws') || lowTitle.includes('azure')) return '☁️';
+      if (lowTitle.includes('security') || lowTitle.includes('cyber')) return '🛡️';
+      return '💼';
+    };
 
     return (
       <View style={styles.jobContainer}>
-        <Text style={styles.cvSectionTitle}>
-          ============== Recommended Jobs ==================
+        <Text
+          style={[styles.cvSectionTitle, {marginTop: 20, marginBottom: 15}]}>
+          ✨ Job Recommendation
         </Text>
 
-        <View style={styles.chartContainer}>
-          <Text
-            style={[styles.cardTitle, {color: '#333', textAlign: 'center'}]}>
-            Job Match Portfolio
-          </Text>
-          <PieChart
-            data={chartData}
-            width={screenWidth - 80}
-            height={200}
-            chartConfig={{
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            }}
-            accessor={'population'}
-            backgroundColor={'transparent'}
-            paddingLeft={'15'}
-            absolute
-          />
-        </View>
-
-        {jobs.map((job, index) => (
-          <View key={index} style={styles.jobItem}>
-            <Text style={styles.jobTitle}>{job.title}</Text>
-            <Text style={styles.jobScore}>Match Score: {job.final_score}%</Text>
-            {job.company_name && (
-              <Text style={styles.jobDescription}>
-                Company: {job.company_name}
-              </Text>
-            )}
-            {job.link && (
-              <TouchableOpacity
-                onPress={() => {
-                  const url = job.link.startsWith('http')
-                    ? job.link
-                    : `https://${job.link}`;
-                  Linking.openURL(url).catch(err =>
-                    console.error("Couldn't load page", err),
-                  );
-                }}>
-                <Text style={[styles.jobDescription, {color: '#007bff'}]}>
-                  View Job: {job.link}
+        {bestMatch && (
+          <View
+            style={[
+              styles.card,
+              {
+                backgroundColor: '#f0f7ff',
+                borderTopWidth: 0,
+                borderLeftWidth: 5,
+                borderLeftColor: '#2f80ed',
+                marginBottom: 25,
+                padding: 20,
+                borderRadius: 15,
+                elevation: 4,
+              },
+            ]}>
+            <Text
+              style={[
+                styles.cardTitle,
+                {color: '#2f80ed', fontSize: 14, marginBottom: 10},
+              ]}>
+              TOP MATCH FOR YOU
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{flex: 1}}>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    color: '#1a202c',
+                    textTransform: 'capitalize',
+                  }}>
+                  {bestMatch.job_title}
                 </Text>
-              </TouchableOpacity>
-            )}
+                <Text style={{color: '#4a5568', marginTop: 4, fontSize: 14}}>
+                  Based on your skill set and experience
+                </Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: '#2f80ed',
+                  borderRadius: 35,
+                  width: 70,
+                  height: 70,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  shadowColor: '#2f80ed',
+                  shadowOffset: {width: 0, height: 4},
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 5,
+                }}>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 32}}>
+                  {getJobEmoji(bestMatch.job_title)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        <Text
+          style={[
+            styles.cvSectionTitle,
+            {fontSize: 18, color: '#333', marginBottom: 15},
+          ]}>
+          Available Positions ({jobsList.length})
+        </Text>
+
+        {jobsList.map((job, index) => (
+          <View
+            key={index}
+            style={[
+              styles.jobItem,
+              {
+                backgroundColor: 'white',
+                padding: 18,
+                borderRadius: 12,
+                marginBottom: 15,
+                elevation: 3,
+                shadowColor: '#000',
+                shadowOffset: {width: 0, height: 2},
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                borderLeftWidth: 4,
+                borderLeftColor: index % 2 === 0 ? '#2f80ed' : '#27ae60',
+              },
+            ]}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+              }}>
+              <Text
+                style={[
+                  styles.jobTitle,
+                  {color: '#2d3748', fontSize: 17, flex: 1, fontWeight: '700'},
+                ]}>
+                {job.title} - {job.experience_level}
+              </Text>
+              <View
+                style={{
+                  backgroundColor: '#edf2f7',
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  borderRadius: 6,
+                }}>
+                <Text
+                  style={{color: '#4a5568', fontSize: 10, fontWeight: '600'}}>
+                  {job.job_type}
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 6,
+              }}>
+              <Text style={{color: '#718096', fontSize: 14, fontWeight: '500'}}>
+                {job.company_name}
+              </Text>
+              <Text style={{marginHorizontal: 8, color: '#cbd5e0'}}>•</Text>
+              <Text style={{color: '#a0aec0', fontSize: 13}}>
+                {job.location}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 12,
+                alignItems: 'center',
+                flexWrap: 'wrap',
+              }}>
+              <View
+                style={{
+                  backgroundColor: '#f0fff4',
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  borderRadius: 20,
+                  marginRight: 10,
+                  marginBottom: 5,
+                }}>
+                <Text
+                  style={{color: '#38a169', fontSize: 12, fontWeight: 'bold'}}>
+                  Rs. {parseFloat(job.salary_min).toLocaleString()} -{' '}
+                  {parseFloat(job.salary_max).toLocaleString()}
+                </Text>
+              </View>
+            </View>
+
+            <View style={{marginTop: 12}}>
+              <Text style={{color: '#718096', fontSize: 12, fontWeight: '600'}}>
+                Required Skills:
+              </Text>
+              <Text
+                style={{
+                  color: '#4a5568',
+                  fontSize: 13,
+                  marginTop: 2,
+                  lineHeight: 18,
+                }}>
+                {job.skills}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#2f80ed',
+                marginTop: 15,
+                paddingVertical: 12,
+                borderRadius: 8,
+                alignItems: 'center',
+                shadowColor: '#2f80ed',
+                shadowOffset: {width: 0, height: 2},
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+              }}
+              onPress={() => {
+                const url = job.link.startsWith('http')
+                  ? job.link
+                  : `https://${job.link}`;
+                Linking.openURL(url).catch(err =>
+                  console.error("Couldn't load page", err),
+                );
+              }}>
+              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 15}}>
+                Apply Now
+              </Text>
+            </TouchableOpacity>
           </View>
         ))}
       </View>
@@ -253,11 +407,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
           </View>
 
           <View style={styles.spacer}>
-            <Button
-              title="Clear"
-              onPress={clearResponse}
-              color="#dc3545"
-            />
+            <Button title="Clear" onPress={clearResponse} color="#dc3545" />
           </View>
 
           {loading && (
@@ -275,45 +425,7 @@ export default function Home({userData, setActiveScreen, onLogout}) {
                 </Text>
               </View>
 
-              {renderList(
-                'Strengths',
-                analysisResult.parsed_data.strengths,
-                '#27ae60',
-              )}
-
-              {renderList(
-                'Technical Skills',
-                analysisResult.parsed_data.skills ||
-                  analysisResult.parsed_data.technical_skills,
-                '#2d9cdb',
-              )}
-
-              {renderList(
-                'Soft Skills',
-                analysisResult.parsed_data.soft_skills,
-                '#db812d',
-              )}
-
-              {renderList(
-                'Certificates',
-                analysisResult.parsed_data.certifications ||
-                  analysisResult.parsed_data.certificates,
-                '#f2c94c',
-              )}
-
-              {renderList(
-                'Experiences',
-                analysisResult.parsed_data.experiences,
-                '#9b59b6',
-              )}
-
-              {renderList(
-                'Weaknesses',
-                analysisResult.parsed_data.weaknesses,
-                '#eb5757',
-              )}
-
-              {renderJobRecommendations(analysisResult.job_recommendations)}
+              {renderJobRecommendations(analysisResult)}
             </>
           )}
         </SafeAreaView>
